@@ -1,0 +1,24 @@
+<web-app>
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>Admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-role>
+		<role-name>Admin</role-name>
+	</security-role>
+
+	<context-param>
+		<param-name>resteasy.role.based.security</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>File System basic Realm</realm-name>
+	</login-config>
+</web-app>
