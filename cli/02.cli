@@ -19,6 +19,12 @@ batch
  
 /subsystem=undertow/application-security-domain=aisHttpSecurityDomain:add(http-authentication-factory=ais-http-auth-factory)
 
+#Turn on verbose debug:
+/subsystem=logging/logger=com.arjuna:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=io.jaegertracing.Configuration:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/logger=sun.rmi:write-attribute(name=level,value=DEBUG)
+/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=DEBUG)
+
 run-batch
 
 reload
