@@ -7,10 +7,10 @@ batch
  
 /subsystem=elytron/filesystem-realm=demoFsRealm:add-identity(identity=frank)
 /subsystem=elytron/filesystem-realm=demoFsRealm:set-password(identity=frank,clear={password="password123"})
-/subsystem=elytron/filesystem-realm=demoFsRealm:add-identity-attribute(identity=frank,name=Roles, value=["Admin","Guest"])
+/subsystem=elytron/filesystem-realm=demoFsRealm:add-identity-attribute(identity=frank,name=Roles, value=["admin","user"])
 /subsystem=elytron/filesystem-realm=demoFsRealm:add-identity(identity=ltv)
 /subsystem=elytron/filesystem-realm=demoFsRealm:set-password(identity=ltv,clear={password="ltv"})
-/subsystem=elytron/filesystem-realm=demoFsRealm:add-identity-attribute(identity=ltv,name=Roles, value=["Guest"])
+/subsystem=elytron/filesystem-realm=demoFsRealm:add-identity-attribute(identity=ltv,name=Roles, value=["user"])
  
 /subsystem=elytron/simple-role-decoder=from-roles-attribute:add(attribute=Roles)
 

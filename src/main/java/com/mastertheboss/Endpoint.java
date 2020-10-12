@@ -23,13 +23,13 @@ public class Endpoint {
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"admin"})
     public String getInfo() {
         return identityInfoAsJson();
     }
 
     @POST
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveData(Data data) {
 
