@@ -19,6 +19,5 @@
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>File System basic Realm</realm-name>
 	</login-config>
 </web-app>

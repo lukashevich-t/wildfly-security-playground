@@ -11,13 +11,13 @@ batch
 /subsystem=elytron/simple-role-decoder=from-roles-attribute:add(attribute=roles)
 
  
-/subsystem=elytron/security-domain=fsSD:add(realms=[{realm=demoFsRealm,role-decoder=from-roles-attribute}],default-realm=demoFsRealm,permission-mapper=default-permission-mapper)
+/subsystem=elytron/security-domain=ais-security-domain:add(realms=[{realm=ais-jdbc-realm,role-decoder=from-roles-attribute}],default-realm=ais-jdbc-realm,permission-mapper=default-permission-mapper)
 
  
-/subsystem=elytron/http-authentication-factory=example-fs-http-auth:add(http-server-mechanism-factory=global,security-domain=fsSD,mechanism-configurations=[{mechanism-name=BASIC,mechanism-realm-configurations=[{realm-name=RealmUsersRoles}]}])
+/subsystem=elytron/http-authentication-factory=ais-http-auth-factory:add(http-server-mechanism-factory=global,security-domain=ais-security-domain,mechanism-configurations=[{mechanism-name=BASIC,mechanism-realm-configurations=[{realm-name=RealmUsersRoles}]}])
 
  
-/subsystem=undertow/application-security-domain=httpFsSD:add(http-authentication-factory=example-fs-http-auth)
+/subsystem=undertow/application-security-domain=aisHttpSecurityDomain:add(http-authentication-factory=ais-http-auth-factory)
 
 run-batch
 
