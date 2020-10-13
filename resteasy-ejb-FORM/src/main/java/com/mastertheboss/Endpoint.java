@@ -1,10 +1,16 @@
 package com.mastertheboss;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,9 +30,47 @@ import org.wildfly.security.authz.Attributes;
 @PermitAll
 @Path("/")
 public class Endpoint {
-
+	
 	@Context
 	private SecurityContext securityContext;
+
+	@GET
+	@Path("/jndi")
+	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll
+	public String jndi() throws NamingException {
+		StringBuilder sb = new StringBuilder();
+		InitialContext c = new InitialContext();
+		
+		enumerateJndi(c, "", "java:/", sb);
+//		while(list.hasMore()) {
+//			NameClassPair next = list.next();
+//			sb.append(next.getName()).append(" isRelative: ").append(next.isRelative())
+//			.append(" getClassName: ").append(next.getClassName())
+//			.append(" java Class: ").append(next.getClass().getCanonicalName())
+//			.append("\n");
+//		}
+		return sb.toString();
+	}
+	
+	
+	private void enumerateJndi(InitialContext c, String prefix, String jndiPrefix, StringBuilder sb) throws NamingException {
+		NamingEnumeration<NameClassPair> list = c.list(jndiPrefix);
+		List<NameClassPair> nestedContexts = new ArrayList<>();
+		while(list.hasMore()) {
+			NameClassPair next = list.next();
+			if(next.getClassName() == "javax.naming.Context") {
+				nestedContexts.add(next);
+			} else {
+				sb.append(prefix).append(next.getName())
+				.append(" of class ").append(next.getClassName()).append("###\n");
+			}
+			for(NameClassPair entry: nestedContexts) {
+				sb.append(prefix).append(entry.getName()).append(":\n");
+				enumerateJndi(c, prefix + "    ", "java:/" + entry.getName() + "/", sb);
+			}
+		}
+	}
 
 	@GET
 	@Path("/infoPublic")

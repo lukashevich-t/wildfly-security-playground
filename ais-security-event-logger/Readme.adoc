@@ -1,0 +1,28 @@
+﻿== Simple security-event-listener for WildFly Elytron
+
+Simple security event listener, which prints information about successful and failed authentication tries to the stderr.
+
+== Usage
+Compile:
+
+	mvn package
+
+Add the module into the WildFly:
+
+	set JBOSS_CLI=d:\utils\wildfly-elytron\bin\jboss-cli.bat
+	%JBOSS_CLI% --connect
+	%JBOSS_CLI% --connect --commands="module remove --name=by.gto.ais.wildfly.security.listeners.ais-security-event-logger"
+	%JBOSS_CLI% --connect --commands="module add --name=by.gto.ais.wildfly.security.listeners.ais-security-event-logger --resources=target/ais-security-event-logger.jar --dependencies=org.wildfly.security.elytron"
+
+Add a ais-security-event-logger into the subsystem:
+
+	%JBOSS_CLI% --connect --commands="/subsystem=elytron/custom-security-event-listener=aisAuditLogger:add(module=by.gto.ais.wildfly.security.listeners.ais-security-event-logger, class-name=by.gto.ais.wildfly.security.listeners.AisSecurityEventListener, configuration={myAttribute=myValue,dsJndiName=java:/env/jdbc/usersDS})"
+
+Упомянуть его в домене безопасности:
+	
+	/subsystem=elytron/security-domain=ais-security-domain:write-attribute(name=security-event-listener,value=aisAuditLogger)
+
+	reload
+
+== Источники
+https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.3/html-single/how_to_configure_server_security/index[дока] п 1.3.1.1
