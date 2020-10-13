@@ -1,0 +1,49 @@
+== Что это
+
+Тестовый проект для исследования безопасности Wildfly Elytron в применении к resteasy+EJB.
+
+== Как запускать
+
+. Провести подготовительные операции (см. README.adoc в корневом проекте).
+. Запустить Wildfly.
+. Запустить скрипт: +
+`$JBOSS_HOME\bin\jboss-cli.bat --connect --file=<PROJECT_ROOT>\resteasy-ejb-FORM\cli\resteasy-ejb-FORM.cli`
+. Собрать и опубликовать проект: +
+	`mvn clean wildfly:undeploy wildfly:deploy`
+. Открывать адреса: http://localhost:8080/resteasy-ejb-FORM/rest/infoUser[доступный для роли user], http://localhost:8080/resteasy-ejb-FORM/rest/infoAdmin[доступный для роли admin] и http://localhost:8080/resteasy-ejb-FORM/rest/infoPublic[доступный для любой роли]
+
+
+== Важные замечания
+. В файле *WEB-INF/web.xml* должен быть разрешен доступ для всех ролей (вот https://docs.jboss.org/resteasy/docs/1.1.GA/userguide/html/Securing_JAX-RS_and_RESTeasy.html[тут] про это написано). Сами роли можно не перечислять:
++
+[source,txt]
+----
+<security-constraint>
+	<web-resource-collection>
+		<url-pattern>/*</url-pattern>
+	</web-resource-collection>
+	<auth-constraint>
+		<role-name>admin</role-name>
+		<role-name>user</role-name>
+	</auth-constraint>
+</security-constraint>
+----
+. Необходимо указать в файле *WEB-INF/jboss-web.xml* имя используемого ejb3/application-security-domain (см. *cli/resteasy-ejb-FORM.cli*). Не путать с undertow/application-security-domain и elytron/security-domain:
++
+[source, xml]
+----
+<jboss-web><security-domain>aisHttpSecurityDomain</security-domain></jboss-web>
+----
+. В коде нужно использовать аннотации *@RolesAllowed, @PermitAll, @DenyAll*.
+. Конфигурация в *web.xml*, чтобы формы работали:
++
+[source, xml]
+----
+<login-config>
+	<auth-method>FORM</auth-method>
+	<form-login-config>
+		<form-login-page>/login.html</form-login-page>
+		<form-error-page>/login-failed.html</form-error-page>
+	</form-login-config>
+</login-config>
+----

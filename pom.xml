@@ -48,5 +48,6 @@
 	<modules>
 		<module>resteasy-BASIC</module>
 		<module>resteasy-FORM</module>
+		<module>resteasy-ejb-FORM</module>
 	</modules>
 </project>
