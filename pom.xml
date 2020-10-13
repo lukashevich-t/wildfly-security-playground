@@ -5,8 +5,8 @@
 	<groupId>by.gto.test</groupId>
 	<artifactId>test2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>test2</name>
+	<packaging>pom</packaging>
+	<name>test-elytron-security</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,7 +37,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>test2</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
@@ -46,4 +45,8 @@
 			</plugin>
 		</plugins>
 	</build>
+	<modules>
+		<module>resteasy-BASIC</module>
+		<module>resteasy-FORM</module>
+	</modules>
 </project>

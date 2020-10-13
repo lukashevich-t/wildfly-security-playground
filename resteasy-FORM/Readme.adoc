@@ -1,0 +1,62 @@
+== Что это
+
+Тестовый проект для исследования безопасности Wildfly Elytron в применении к resteasy.
+
+== Как запускать
+
+. Провести подготовительные операции (см. README.adoc в корневом проекте).
+. Запустить Wildfly.
+. Запустить скрипт: +
+`$JBOSS_HOME\bin\jboss-cli.bat --connect --file=<PROJECT_ROOT>\resteasy-FORM\cli\resteasy-FORM.cli`
+. Собрать и опубликовать проект: +
+	`mvn clean wildfly:undeploy wildfly:deploy`
+. Открывать адреса: http://localhost:8080/resteasy-FORM/rest/infoUser[доступный для роли user] и http://localhost:8080/resteasy-FORM/rest/infoAdmin[доступный для роли admin]
+
+
+== Важные замечания
+. В файле *WEB-INF/web.xml* должны быть прописаны все используемые роли, а также должен быть разрешен доступ для всех ролей ( вот https://docs.jboss.org/resteasy/docs/1.1.GA/userguide/html/Securing_JAX-RS_and_RESTeasy.html[тут] про это написано):
++
+[source,txt]
+----
+<security-constraint>
+	<web-resource-collection>
+		<url-pattern>/*</url-pattern>
+	</web-resource-collection>
+	<auth-constraint>
+		<role-name>admin</role-name>
+		<role-name>user</role-name>
+	</auth-constraint>
+</security-constraint>
+
+<security-role><role-name>admin</role-name></security-role>
+<security-role><role-name>user</role-name></security-role>
+----
+А собственно авторизацией будет заниматься RestEasy
+. Чтобы в resteasy работало ограничение по ролям, нужно в файле *WEB-INF/web.xml* прописать параметр. Но если используются аннотации EJB (*@Stateless*  прочие), то его задавать *не нужно*:
++
+[source,txt]
+----
+<context-param>
+	<param-name>resteasy.role.based.security</param-name>
+	<param-value>true</param-value>
+</context-param>
+----
+. Необходимо указать в файле *WEB-INF/jboss-web.xml* имя используемого application-security-domain (см. *cli/resteasy.cli*):
++
+[source, xml]
+----
+<jboss-web><security-domain>aisHttpSecurityDomain</security-domain></jboss-web>
+----
+. В коде нужно использовать аннотации *@RolesAllowed, @PermitAll, @DenyAll*.
+. Конфигурация в *web.xml*, чтобы формы работали:
++
+[source, xml]
+----
+<login-config>
+	<auth-method>FORM</auth-method>
+	<form-login-config>
+		<form-login-page>/login.html</form-login-page>
+		<form-error-page>/login-failed.html</form-error-page>
+	</form-login-config>
+</login-config>
+----

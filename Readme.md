@@ -1,1 +1,0 @@
-Based on http://www.mastertheboss.com/jboss-frameworks/resteasy/securing-jax-rs-services-in-wildfly-applications

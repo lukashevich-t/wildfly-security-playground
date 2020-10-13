@@ -1,0 +1,131 @@
+== Описание
+Based on http://www.mastertheboss.com/jboss-frameworks/resteasy/securing-jax-rs-services-in-wildfly-applications
+
+== Подготовка
+
+. Установить Mysql или MariaDB
+. Создать БД *erip*
+. Создать таблицы *user, role, user_role*:
++
+[source,sql]
+----
+SET NAMES 'utf8';
+USE erip;
+--
+-- Создать таблицу `user`
+--
+CREATE TABLE user (
+  id smallint(6) NOT NULL AUTO_INCREMENT,
+  name char(100) NOT NULL,
+  login char(50) NOT NULL,
+  login_cert char(50) DEFAULT NULL,
+  valid bit(1) NOT NULL DEFAULT b'1',
+  passwd_sha char(64) NOT NULL DEFAULT '',
+  date_from date NOT NULL DEFAULT '2017-01-01' COMMENT 'Первый день работы',
+  date_to date NOT NULL DEFAULT '2100-01-01' COMMENT 'Последний день работы (включительно!!!)',
+  passwd varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+CHARACTER SET utf8,
+COLLATE utf8_general_ci;
+
+ALTER TABLE user
+ADD UNIQUE INDEX UK_users_name (login);
+
+--
+-- Создать таблицу `role`
+--
+CREATE TABLE role (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  name char(50) NOT NULL,
+  comment char(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+CHARACTER SET utf8,
+COLLATE utf8_general_ci;
+
+ALTER TABLE role
+ADD UNIQUE INDEX UK_roles_name (name);
+
+--
+-- Создать таблицу `user_role`
+--
+CREATE TABLE user_role (
+  user_id smallint(6) NOT NULL,
+  role_id int(11) NOT NULL,
+  PRIMARY KEY (user_id, role_id)
+);
+
+--
+-- Создать внешний ключ
+--
+ALTER TABLE user_role
+ADD CONSTRAINT FK_user_role_roles_id FOREIGN KEY (role_id)
+REFERENCES role (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Создать внешний ключ
+--
+ALTER TABLE user_role
+ADD CONSTRAINT FK_user_role_user_id FOREIGN KEY (user_id)
+REFERENCES user (id) ON UPDATE CASCADE;
+
+INSERT INTO erip.user (id, name, login, valid, passwd_sha, date_from, date_to, passwd) VALUES
+(1000, 'Администратор', 'admin', 1, 'd033e22ae348aeb5660fc2140aec35850c4da997', '2000-01-01', '2100-01-01', 'admin'),
+(1001, 'Пользователь', 'user', 1, '12dea96fec20593566ab75692c9949596833adc9', '2000-01-01', '2100-01-01', 'user');
+
+INSERT INTO erip.role (id, name, comment) VALUES
+(1000, 'admin', ''),
+(1001, 'user', '');
+
+INSERT INTO erip.user_role (user_id, role_id) VALUES
+(1000, 1000),
+(1000, 1001),
+(1001, 1001);
+----
+. Скачать https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip[Wildfly]
+. Распаковать в *d:\utils\wildfly-elytron* (далее - *$JBOSS_HOME*)
+. Создать модуль для драйвера mysql(mariadb):
+.. Скачать https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.4.0/mariadb-java-client-2.4.0.jar[драйвер]
+.. Положить в *$JBOSS_HOME\modules\system\layers\base\org\mariadb\jdbc\main\* (при необходимости создав папку)
+.. Туда же поместить файл *module.xml*:
++
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<module xmlns="urn:jboss:module:1.3" name="org.mariadb.jdbc">
+
+    <resources>
+        <resource-root path="mariadb-java-client-2.4.0.jar"/>
+    </resources>
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="javax.transaction.api"/>
+        <module name="javax.servlet.api" optional="true"/>
+    </dependencies>
+</module>
+----
+.. Перезапустить wildfly
