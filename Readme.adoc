@@ -1,18 +1,18 @@
-== Описание
+== РћРїРёСЃР°РЅРёРµ
 Based on http://www.mastertheboss.com/jboss-frameworks/resteasy/securing-jax-rs-services-in-wildfly-applications
 
-== Подготовка
+== РџРѕРґРіРѕС‚РѕРІРєР°
 
-. Установить Mysql или MariaDB
-. Создать БД *erip*
-. Создать таблицы *user, role, user_role*:
+. РЈСЃС‚Р°РЅРѕРІРёС‚СЊ Mysql РёР»Рё MariaDB
+. РЎРѕР·РґР°С‚СЊ Р‘Р” *erip*
+. РЎРѕР·РґР°С‚СЊ С‚Р°Р±Р»РёС†С‹ *user, role, user_role*:
 +
 [source,sql]
 ----
 SET NAMES 'utf8';
 USE erip;
 --
--- Создать таблицу `user`
+-- РЎРѕР·РґР°С‚СЊ С‚Р°Р±Р»РёС†Сѓ `user`
 --
 CREATE TABLE user (
   id smallint(6) NOT NULL AUTO_INCREMENT,
@@ -21,8 +21,8 @@ CREATE TABLE user (
   login_cert char(50) DEFAULT NULL,
   valid bit(1) NOT NULL DEFAULT b'1',
   passwd_sha char(64) NOT NULL DEFAULT '',
-  date_from date NOT NULL DEFAULT '2017-01-01' COMMENT 'Первый день работы',
-  date_to date NOT NULL DEFAULT '2100-01-01' COMMENT 'Последний день работы (включительно!!!)',
+  date_from date NOT NULL DEFAULT '2017-01-01' COMMENT 'РџРµСЂРІС‹Р№ РґРµРЅСЊ СЂР°Р±РѕС‚С‹',
+  date_to date NOT NULL DEFAULT '2100-01-01' COMMENT 'РџРѕСЃР»РµРґРЅРёР№ РґРµРЅСЊ СЂР°Р±РѕС‚С‹ (РІРєР»СЋС‡РёС‚РµР»СЊРЅРѕ!!!)',
   passwd varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (id)
 )
@@ -33,7 +33,7 @@ ALTER TABLE user
 ADD UNIQUE INDEX UK_users_name (login);
 
 --
--- Создать таблицу `role`
+-- РЎРѕР·РґР°С‚СЊ С‚Р°Р±Р»РёС†Сѓ `role`
 --
 CREATE TABLE role (
   id int(11) NOT NULL AUTO_INCREMENT,
@@ -48,7 +48,7 @@ ALTER TABLE role
 ADD UNIQUE INDEX UK_roles_name (name);
 
 --
--- Создать таблицу `user_role`
+-- РЎРѕР·РґР°С‚СЊ С‚Р°Р±Р»РёС†Сѓ `user_role`
 --
 CREATE TABLE user_role (
   user_id smallint(6) NOT NULL,
@@ -57,22 +57,22 @@ CREATE TABLE user_role (
 );
 
 --
--- Создать внешний ключ
+-- РЎРѕР·РґР°С‚СЊ РІРЅРµС€РЅРёР№ РєР»СЋС‡
 --
 ALTER TABLE user_role
 ADD CONSTRAINT FK_user_role_roles_id FOREIGN KEY (role_id)
 REFERENCES role (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Создать внешний ключ
+-- РЎРѕР·РґР°С‚СЊ РІРЅРµС€РЅРёР№ РєР»СЋС‡
 --
 ALTER TABLE user_role
 ADD CONSTRAINT FK_user_role_user_id FOREIGN KEY (user_id)
 REFERENCES user (id) ON UPDATE CASCADE;
 
 INSERT INTO erip.user (id, name, login, valid, passwd_sha, date_from, date_to, passwd) VALUES
-(1000, 'Администратор', 'admin', 1, 'd033e22ae348aeb5660fc2140aec35850c4da997', '2000-01-01', '2100-01-01', 'admin'),
-(1001, 'Пользователь', 'user', 1, '12dea96fec20593566ab75692c9949596833adc9', '2000-01-01', '2100-01-01', 'user');
+(1000, 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ', 'admin', 1, 'd033e22ae348aeb5660fc2140aec35850c4da997', '2000-01-01', '2100-01-01', 'admin'),
+(1001, 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ', 'user', 1, '12dea96fec20593566ab75692c9949596833adc9', '2000-01-01', '2100-01-01', 'user');
 
 INSERT INTO erip.role (id, name, comment) VALUES
 (1000, 'admin', ''),
@@ -83,12 +83,12 @@ INSERT INTO erip.user_role (user_id, role_id) VALUES
 (1000, 1001),
 (1001, 1001);
 ----
-. Скачать https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip[Wildfly]
-. Распаковать в *d:\utils\wildfly-elytron* (далее - *$JBOSS_HOME*)
-. Создать модуль для драйвера mysql(mariadb):
-.. Скачать https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.4.0/mariadb-java-client-2.4.0.jar[драйвер]
-.. Положить в *$JBOSS_HOME\modules\system\layers\base\org\mariadb\jdbc\main\* (при необходимости создав папку)
-.. Туда же поместить файл *module.xml*:
+. РЎРєР°С‡Р°С‚СЊ https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip[Wildfly]
+. Р Р°СЃРїР°РєРѕРІР°С‚СЊ РІ *d:\utils\wildfly-elytron* (РґР°Р»РµРµ - *$JBOSS_HOME*)
+. РЎРѕР·РґР°С‚СЊ РјРѕРґСѓР»СЊ РґР»СЏ РґСЂР°Р№РІРµСЂР° mysql(mariadb):
+.. РЎРєР°С‡Р°С‚СЊ https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.4.0/mariadb-java-client-2.4.0.jar[РґСЂР°Р№РІРµСЂ]
+.. РџРѕР»РѕР¶РёС‚СЊ РІ *$JBOSS_HOME\modules\system\layers\base\org\mariadb\jdbc\main\* (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё СЃРѕР·РґР°РІ РїР°РїРєСѓ)
+.. РўСѓРґР° Р¶Рµ РїРѕРјРµСЃС‚РёС‚СЊ С„Р°Р№Р» *module.xml*:
 +
 [source,xml]
 ----
@@ -128,4 +128,4 @@ INSERT INTO erip.user_role (user_id, role_id) VALUES
     </dependencies>
 </module>
 ----
-.. Перезапустить wildfly
+.. РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ wildfly
