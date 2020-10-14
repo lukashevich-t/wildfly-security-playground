@@ -6,7 +6,7 @@ batch
 /subsystem=datasources/jdbc-driver=mariadb-java-client:add(driver-module-name=org.mariadb.jdbc,driver-xa-datasource-class-name=org.mariadb.jdbc.MySQLDataSource,driver-name=mariadb-java-client)
 /subsystem=datasources/data-source=usersDS:add(connection-url="jdbc:mysql://localhost:33061/erip", jndi-name="java:/env/jdbc/usersDS", driver-name=mariadb-java-client, user-name="root", password="123456")
 
-/subsystem=elytron/jdbc-realm=ais-jdbc-realm:add(principal-query=[{sql="SELECT u.passwd_sha, r.name FROM erip.user u INNER JOIN erip.user_role utr ON u.id = utr.user_id INNER JOIN erip.role r ON utr.role_id = r.id WHERE u.login=? AND u.valid", data-source="usersDS", simple-digest-mapper={algorithm=simple-digest-sha-1,hash-encoding=hex,password-index=1},attribute-mapping=[{index=2, to=roles}]}])
+/subsystem=elytron/jdbc-realm=ais-jdbc-realm:add(principal-query=[{sql="SELECT u.passwd_sha, r.name, u.password_expiration <= CURRENT_DATE() FROM erip.user u INNER JOIN erip.user_role utr ON u.id = utr.user_id INNER JOIN erip.role r ON utr.role_id = r.id WHERE u.login = ? AND u.valid", data-source="usersDS", simple-digest-mapper={algorithm=simple-digest-sha-1,hash-encoding=hex,password-index=1},attribute-mapping=[{index=2, to=roles}, {index=3, to=passwordExpired}]}])
  
 /subsystem=elytron/simple-role-decoder=from-roles-attribute:add(attribute=roles)
 
