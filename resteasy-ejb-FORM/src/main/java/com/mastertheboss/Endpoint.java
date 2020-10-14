@@ -30,7 +30,7 @@ import org.wildfly.security.authz.Attributes;
 @PermitAll
 @Path("/")
 public class Endpoint {
-	
+
 	@Context
 	private SecurityContext securityContext;
 
@@ -41,7 +41,7 @@ public class Endpoint {
 	public String jndi() throws NamingException {
 		StringBuilder sb = new StringBuilder();
 		InitialContext c = new InitialContext();
-		
+
 		enumerateJndi(c, "", "java:/", sb);
 //		while(list.hasMore()) {
 //			NameClassPair next = list.next();
@@ -52,23 +52,23 @@ public class Endpoint {
 //		}
 		return sb.toString();
 	}
-	
-	
-	private void enumerateJndi(InitialContext c, String prefix, String jndiPrefix, StringBuilder sb) throws NamingException {
+
+	private void enumerateJndi(InitialContext c, String prefix, String jndiPrefix, StringBuilder sb)
+			throws NamingException {
 		NamingEnumeration<NameClassPair> list = c.list(jndiPrefix);
 		List<NameClassPair> nestedContexts = new ArrayList<>();
-		while(list.hasMore()) {
+		while (list.hasMore()) {
 			NameClassPair next = list.next();
-			if(next.getClassName() == "javax.naming.Context") {
+			if (next.getClassName() == "javax.naming.Context") {
 				nestedContexts.add(next);
 			} else {
-				sb.append(prefix).append(next.getName())
-				.append(" of class ").append(next.getClassName()).append("###\n");
+				sb.append(prefix).append(next.getName()).append(" of class ").append(next.getClassName())
+						.append("###\n");
 			}
-			for(NameClassPair entry: nestedContexts) {
-				sb.append(prefix).append(entry.getName()).append(":\n");
-				enumerateJndi(c, prefix + "    ", "java:/" + entry.getName() + "/", sb);
-			}
+		}
+		for (NameClassPair entry : nestedContexts) {
+			sb.append(prefix).append(entry.getName()).append(":\n");
+			enumerateJndi(c, prefix + "    ", jndiPrefix + entry.getName() + "/", sb);
 		}
 	}
 
@@ -114,13 +114,13 @@ public class Endpoint {
 
 	private String identityInfoAsJsonPublic() {
 		JSONObject response = new JSONObject();
-		
+
 		SecurityDomain secDomain = SecurityDomain.getCurrent();
 		response.put("SecurityDomain", secDomain);
 		if (secDomain == null) {
 			return response.toString();
 		}
-		
+
 		SecurityIdentity identity = secDomain.getCurrentSecurityIdentity();
 		response.put("SecurityIdentity", identity);
 		if (identity == null) {
