@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>by.gto.test</groupId>
-	<artifactId>test2</artifactId>
+	<artifactId>wildfly-playground</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>test-elytron-security</name>
+	<name>wildfly-playground</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,15 +23,37 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20200518</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.wildfly.security</groupId>
 			<artifactId>wildfly-elytron-auth-server</artifactId>
 			<version>1.10.4.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.10</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.10</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.9.7</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -50,5 +72,8 @@
 		<module>resteasy-FORM</module>
 		<module>resteasy-ejb-FORM</module>
 		<module>ais-security-event-logger</module>
+		<module>jsonb-tests</module>
+		<module>jackson-tests</module>
+		<module>commons</module>
 	</modules>
 </project>

@@ -1,0 +1,17 @@
+== Что это
+
+Тестовый проект для исследования возможностей JSON binding (JSON-B).
+
+Проверено/реализовано:
+
+* Собственные сериализаторы/десериализаторы для byte[] и Date (с временем и без него):
+** by.gto.test.jsonb.helpers.deserializers.JsonbDateDeserializer
+** by.gto.test.jsonb.helpers.deserializers.JsonbDateTimeDeserializer
+** by.gto.test.jsonb.helpers.deserializers.JsonbGuidDeserializer
+** by.gto.test.jsonb.helpers.serializers.JsonbDateSerializer
+** by.gto.test.jsonb.helpers.serializers.JsonbDateTimeSerializer
+** by.gto.test.jsonb.helpers.serializers.JsonbGuidSerializer
+* Обёртка (конверт) с полями "содержимое" и "ЭЦП". Позволяет заворачивать любой POJO.
+Содержимое закодировано в Base64:
+** by.gto.test.jsonb.model.Envelope
+** by.gto.test.jsonb.model.OgEnvelope

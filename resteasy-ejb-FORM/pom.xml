@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>by.gto.test</groupId>
-		<artifactId>test2</artifactId>
+		<artifactId>wildfly-playground</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>resteasy-ejb-FORM</artifactId>
@@ -14,4 +14,11 @@
 	<build>
 		<finalName>${project.name}</finalName>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20200518</version>
+		</dependency>
+	</dependencies>
 </project>
