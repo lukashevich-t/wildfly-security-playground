@@ -9,7 +9,7 @@
 ** by.gto.test.jackson.helpers.serializers.JsonGuidSerializer
 * Обёртка (конверт) с полями "содержимое" и "ЭЦП". Позволяет заворачивать любой POJO.
 Содержимое закодировано в Base64:
-** by.gto.test.jackson.model.Envelope
+** by.gto.test.jackson.model.GenericEnvelope
 ** by.gto.test.jackson.model.OgEnvelope
 * Конфигурация глобального ObjectMapper для JavaEE Application server:
 ** by.gto.test.jackson.mybatis.MybatisProducers

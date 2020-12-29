@@ -75,5 +75,6 @@
 		<module>jsonb-tests</module>
 		<module>jackson-tests</module>
 		<module>commons</module>
+		<module>custom-authentication</module>
 	</modules>
 </project>

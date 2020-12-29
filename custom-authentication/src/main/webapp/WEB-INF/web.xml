@@ -1,0 +1,36 @@
+<web-app>
+
+<!--	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/s/o/*</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/s/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>-->
+
+	<security-role>
+		<role-name>admin</role-name>
+	</security-role>
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
+
+	<context-param>
+		<param-name>resteasy.role.based.security</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+<!--
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+-->
+</web-app>

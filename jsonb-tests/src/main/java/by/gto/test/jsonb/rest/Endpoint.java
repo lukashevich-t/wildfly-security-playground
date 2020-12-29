@@ -2,9 +2,12 @@ package by.gto.test.jsonb.rest;
 
 import by.gto.test.jsonb.model.Og;
 import by.gto.test.jsonb.model.OgEnvelope;
+import by.gto.test.jsonb.model.Test;
 import by.gto.test.jsonb.mybatis.TestMappers;
+import java.util.Date;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,6 +32,12 @@ public class Endpoint {
         System.out.println(og);
         testMappers.saveOg(og);
         return og;
+    }
+
+    @GET
+    @Path("date")
+    public Test date() {
+        return new Test();
     }
 
     @Inject

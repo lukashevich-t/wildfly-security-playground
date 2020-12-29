@@ -1,70 +1,56 @@
 package by.gto.test.jackson.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import by.gto.test.jackson.AisException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Base64;
 
-public class Envelope<T> {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Envelope {
+    /**
+     * Данные в формате json
+     */
+    @JsonProperty("d")
+    private final byte[] data;
 
-    @JsonIgnore
-    private final Class<?> actualTypeClass;
-
-    @JsonIgnore
-    private T document;
-    @JsonProperty("data")
-    private String jsonData;
-    @JsonProperty("sign")
-    private String sign;
+    /**
+     * Сигнатура
+     */
+    @JsonProperty("s")
+    private final byte[] sign;
 
     private static final ObjectMapper om = by.gto.test.helpers.JacksonConfig.getDefaultObjectMapper();
 
-    public Envelope() {
-        final Class<?> actualClass = this.getClass();
-        final ParameterizedType genericSuperclass = (ParameterizedType) (actualClass.getGenericSuperclass());
-        final Type actualTypeArgument = genericSuperclass.getActualTypeArguments()[0];
-        actualTypeClass = (Class<?>) actualTypeArgument;
+    @JsonCreator
+    public Envelope(@JsonProperty("d") String encodedData, @JsonProperty("s") String encodedSign) throws Exception {
+        final Base64.Decoder decoder = Base64.getDecoder();
+        final byte[] decodedDataAsBytes = decoder.decode(encodedData);
+        this.data = decodedDataAsBytes;
+//        this.data = new String(decodedDataAsBytes, StandardCharsets.UTF_8);
+        this.sign = decoder.decode(encodedSign);
+
+        // Проверить подпись:
+        final MessageDigest md = MessageDigest.getInstance("SHA-256");
+        if (!Arrays.equals(this.sign, md.digest(decodedDataAsBytes))) {
+            throw new AisException("Ошибка проверки ЭЦП!", -1, 500);
+        }
     }
 
-    //<editor-fold desc="getters">
-    public T getDocument() {
-        return document;
+    public <T> T getDocument(Class<T> type) throws IOException {
+        final T t = om.readValue(data, type);
+        return t;
     }
 
-    public void setDocument(T document) {
-        this.document = document;
+    public byte[] getData() {
+        return data;
     }
 
-    public String getSign() {
+    public byte[] getSign() {
         return sign;
     }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
-    public String getJsonData() {
-        return jsonData;
-    }
-
-    public void setJsonData(String jsonData) throws IOException {
-        this.jsonData = new String(Base64.getDecoder().decode(jsonData), StandardCharsets.UTF_8);
-        final ObjectReader or = om.readerFor(actualTypeClass);
-        document = or.readValue(this.jsonData);
-    }
-
-    @Override
-    public String toString() {
-        return "Envelope{" +
-                "document=" + document +
-                ", jsonData='" + jsonData + '\'' +
-                ", sign='" + sign + '\'' +
-                '}';
-    }
-    //</editor-fold>
 }
