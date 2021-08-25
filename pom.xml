@@ -76,5 +76,6 @@
 		<module>jackson-tests</module>
 		<module>commons</module>
 		<module>custom-authentication</module>
+		<module>elytron-tests</module>
 	</modules>
 </project>
