@@ -129,3 +129,8 @@ INSERT INTO erip.user_role (user_id, role_id) VALUES
 </module>
 ----
 .. Перезапустить wildfly
+
+== Websockets
+https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/homewebsocket/websockethome.html[раз статья]
+
+https://www.freecodecamp.org/news/how-to-secure-your-websocket-connections-d0be0996c556/[два статья]
